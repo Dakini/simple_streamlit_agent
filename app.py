@@ -4,10 +4,9 @@ import sys
 from pathlib import Path
 
 # Add parent directory to path to import modules
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from search_agent import SearchAgent, load_data, create_text_index, create_vector_index
-from log_utils import Logger
+import ingest
+import search_agent
+import logs
 
 # Page configuration
 st.set_page_config(
@@ -25,11 +24,9 @@ st.markdown(
 # Initialize session state
 if "initialized" not in st.session_state:
     with st.spinner("Loading search agent..."):
-        logger = Logger("logs")
-        data = load_data()
-        text_index = create_text_index(data)
-        vector_index = create_vector_index(data)
-        st.session_state.search_agent = SearchAgent(text_index, vector_index, logger)
+        text_index, vector_index = ingest.index_data()
+        search_agent
+        st.session_state.agent = search_agent.init_agent(text_index, vector_index)
         st.session_state.initialized = True
 
 if "messages" not in st.session_state:
@@ -58,14 +55,15 @@ if user_input:
 
         try:
             # Get response from search agent
-            response = st.session_state.search_agent.search(user_input)
+            response = asyncio.run(st.session_state.agent.run(user_prompt=user_input))
+            full_response = response.output
 
-            # Stream the response character by character
-            for chunk in response:
-                full_response += chunk
-                message_placeholder.markdown(full_response + "▌")
+            # Log the interaction
+            logs.log_interaction_to_file(
+                st.session_state.agent, response.new_messages()
+            )
 
-            # Final response without cursor
+            # Display the response
             message_placeholder.markdown(full_response)
 
         except Exception as e:

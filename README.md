@@ -1,6 +1,6 @@
 # AI Hero - Documentation Assistant
 
-An AI-powered search agent that answers questions about documentation using intelligent chunking, vector embeddings, and Claude AI.
+An AI-powered search agent that answers questions about documentation using intelligent chunking, vector embeddings
 
 ## Overview
 
@@ -47,7 +47,7 @@ Then ask questions about your documentation. The agent will search through index
 ## Architecture
 
 - `ingest.py` - Data loading and index creation
-- `search_agent.py` - AI agent initialization with Claude
+- `search_agent.py` - AI agent initialization 
 - `search_tools.py` - Search tool implementation
 - `app.py` - Streamlit web interface
 - `main.py` - CLI interface

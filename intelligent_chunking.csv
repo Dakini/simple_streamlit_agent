@@ -1,0 +1,894 @@
+filename,section
+multi-agent-coding-system-main/LICENSE.md,"## Apache License Overview
+
+This section provides an introduction to the Apache License Version 2.0, outlining its purpose and addressing terms related to use, reproduction, and distribution of licensed works."
+multi-agent-coding-system-main/LICENSE.md,"## 1. Definitions
+
+This section defines key terms used in the License, including:
+
+- **License**: Terms and conditions for use, reproduction, and distribution.
+- **Licensor**: The copyright owner or authorized entity granting the License.
+- **Legal Entity**: Entity that controls or is controlled by others.
+- **You/Your**: Individual or Legal Entity exercising permissions granted by the License.
+- **Source Form**: The preferred form for making modifications (e.g., source code).
+- **Object Form**: Any form resulting from transformation of Source form.
+- **Work**: The authorship made available under the License.
+- **Derivative Works**: Works based on or derived from the original Work.
+- **Contribution**: Any work submitted for inclusion in the Work by the copyright owner.
+- **Contributor**: Licensor and any individual or entity on behalf of whom a Contribution has been received."
+multi-agent-coding-system-main/LICENSE.md,"## 2. Grant of Copyright License
+
+This section details the permissions granted to users under the License, allowing for reproduction, creation of Derivative Works, public display, public performance, sublicensing, and distribution."
+multi-agent-coding-system-main/LICENSE.md,"## 3. Grant of Patent License
+
+This section grants a patent license allowing users to make and distribute the Work and its Contributions, while outlining termination conditions related to patent litigation."
+multi-agent-coding-system-main/LICENSE.md,"## 4. Redistribution
+
+This section outlines the conditions under which users can redistribute the Work or Derivative Works, including requirements for providing copies of the License and making necessary attributions."
+multi-agent-coding-system-main/LICENSE.md,"## 5. Submission of Contributions
+
+This section explains the treatment of Contributions submitted to the Licensor, indicating that they fall under the terms of this License unless otherwise stated."
+multi-agent-coding-system-main/LICENSE.md,"## 6. Trademarks
+
+This section clarifies that the License does not permit the use of trade names or trademarks of the Licensor, except under specific conditions related to providing notice of origin."
+multi-agent-coding-system-main/LICENSE.md,"## 7. Disclaimer of Warranty
+
+This section provides a disclaimer stating that the Work is provided ""as-is,"" without warranties or conditions, and that the user is responsible for any associated risks."
+multi-agent-coding-system-main/LICENSE.md,"## 8. Limitation of Liability
+
+This section limits the liability of Contributors for damages arising from the License or the use of the Work, even if they were advised of potential damages."
+multi-agent-coding-system-main/LICENSE.md,"## 9. Accepting Warranty or Additional Liability
+
+In this section, users who choose to offer support or warranty obligations while redistributing the Work must do so on their own behalf and agree to indemnify Contributors."
+multi-agent-coding-system-main/LICENSE.md,"## Appendix: How to Apply the Apache License
+
+This section provides guidance on how to apply the Apache License to your work, including a boilerplate notice template and recommendations for including identifying information."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## Project Structure Documentation
+
+The organizational layout and contents of the multi-agent coding system project.
+
+```
+multi-agent-coding-system/
+├── src/
+│   └── multi_agent_coding_system/
+│       ├── agents/                     
+│       │   └── actions/                
+│       ├── env_interaction/              
+│       ├── state/                        
+│       ├── system_msgs/                  
+│       └── utils/                        
+├── evaluation/                          
+├── tests/                                
+├── readme_imgs/                         
+├── new_features.md                      
+├── LICENSE.md                          
+├── pyproject.toml                       
+└── README.md                            
+```"
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## Core Components
+
+### 1. **OrchestratorAgent**
+Stateless orchestrator for coordinating multi-agent task execution.
+
+**Key Responsibilities:**
+- Receives high-level task instructions.
+- Coordinates task creation and manages execution lifecycle.
+- Tracks token usage and monitors elapsed time.
+
+**Key Methods:**
+- `setup()`
+- `execute_turn(instruction, turn_num)`
+- `run(instruction, max_turns)`
+
+**Design Pattern:** Stateless execution per turn."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 1.1 **OrchestratorAgentStateful**
+Stateful variant that keeps full message history for reinforcement learning.
+
+**Key Differences:**
+- Maintains complete message history for stateful processing.
+- Simplified method signatures for task execution.
+
+**Use Case:** Designed for RL training scenarios."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 1.2 **TBenchOrchestratorAgent**
+Adapter for terminal bench evaluation, wrapping OrchestratorAgent functionalities.
+
+**Responsibilities:**
+- Interfaces with Stanford's Terminal Bench framework.
+- Aggregates metrics and runs orchestrators in async event loops."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 2. **Subagent**
+Specialized agents that autonomously execute tasks and report results.
+
+**Agent Types:**
+- **Explorer Agent:** Gathers context from the codebase.
+- **Coder Agent:** Writes and modifies code.
+
+**Key Responsibilities:**
+- Execute tasks within their defined scope.
+- Report results and context to the orchestrator."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 3. **OrchestratorHub**
+Central hub managing hierarchical tasks and shared contexts.
+
+**Core Responsibilities:**
+- Create and manage tasks through the Hierarchical Task Manager.
+- Store and resolve contexts accessed by subagents.
+
+**Key Methods:**
+- `create_task()`
+- `process_subagent_result(task_id, report, verbose)`"
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 4. **Action System**
+Framework enabling interaction through structured commands via XML/YAML.
+
+**Action Categories (15+ types):**
+- **Execution Actions:** Running commands and marking tasks as complete.
+- **File Operations:** Reading, writing, and editing files.
+- **Search Operations:** Searching through files and directories.
+  
+**Design Pattern:** Declarative action definitions using Pydantic models."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 5. **Hierarchical Task Manager**
+Manages hierarchical relationships with ownership control.
+
+**Key Responsibilities:**
+- Enforce ownership of tasks.
+- Provide a structured view of task hierarchies."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 6. **Execution Layer**
+Handles all action execution and environmental interactions.
+
+**Components:**
+- **TurnExecutor**: Coordinates parsing and execution.
+- **CommandExecutor**: Manages command execution in Docker environments."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## Key Architecture Patterns 
+
+### 1. **Dual Orchestrator Modes Pattern**
+Supports both stateless and stateful orchestrator variants for different applications.
+
+**Trade-offs:** 
+- Stateless: Reduced token costs.
+- Stateful: Full message history for training."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 2. **Hierarchical Multi-Agent Orchestration Pattern**
+A defined hierarchy for task management between orchestrator and subagents.
+
+**Properties:**
+- Max depth enforced to prevent infinite loops.
+- Ownership of tasks is specified."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 3. **Context Store Pattern**
+Centralized management of shared information across agents with resolved references."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 4. **Action-First Design**
+Actions are defined first and validated independently, enhancing modularity."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 5. **Forced Completion Pattern**
+Ensures that tasks complete properly, employing strategies like max turn limits and forced reporting."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### 6. **Response Truncation Pattern**
+Prevents overloading the system while maintaining context continuity, especially in longer tasks."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## Evaluation Framework
+
+### Terminal Bench Integration
+This framework assesses performance on Stanford's Terminal Bench.
+
+**Key Components:**
+1. **Evaluation Script:** Configurable orchestrator and subagents run through CLI.
+2. **Model Mixing Experiments:** Document results of different model combinations.
+3. **Deployment Guides:** Instructions for setting up environments and multi-node configurations."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"### Utility Infrastructure
+
+A detailed overview of miscellaneous tools that support the main functionalities.
+
+- **AsyncDockerContainerManager**: For Docker orchestration across multiple nodes.
+- **SessionLogger**: Captures execution metrics.
+- **Critical Error Logger**: Records system failures for analysis."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## Test Suite
+
+### Test Coverage
+The testing suite comprises numerous tests ensuring robustness. The focus is on both unit and integration testing, targeting:
+
+- **Core functionality**: Ensuring expected behaviors.
+- **Concurrency**: Validating async operations."
+multi-agent-coding-system-main/PROJECT_STRUCTURE.md,"## New Features (v0.1)
+
+Recent enhancements and updates to the system structure and functionalities.
+
+### System Architecture
+Features a refined model allowing flexible integrations and full async capability across components.
+
+### Evaluation Adjustments
+Includes systematic measures for deploying and assessing multi-agent task completion while considering resource metrics."
+multi-agent-coding-system-main/README.md,"## 🤓 Orchestrator Overview
+
+The Orchestrator is a multi-agent AI system that recently achieved 13th place on Stanford's TerminalBench. It features an orchestration agent that manages multiple explorer and coder agents, defining the tasks each must complete and intelligently reusing knowledge artifacts across tasks."
+multi-agent-coding-system-main/README.md,"## Releases
+
+### (4th Nov 25) 🌊 Orca-Agent-v0.1 
+
+- The RL trained 14B Orca-Agent-v0.1 achieved a 160.71% relative increase on Stanford's TerminalBench.
+- Multi-agent RL training was scaled to 32x Nvidia H100s, with simultaneous deployment of 256 Docker environments.
+- All training resources are open-sourced.
+
+### (2nd Nov 25)
+
+- Introduced new abilities for the system and agents, including:
+  - Different models for orchestrator and subagents.
+  - Fully asynchronous app functionality.
+  - Package format for easier integration with other projects.
+  - Context references for easier task management.
+  - New Docker manager for single and distributed nodes.
+  - Various bug fixes.
+
+### (2nd Sept 25) 🤓 Orchestrator - multi-agent-coder 
+
+- Initially placed #12 on Stanford's Terminal Bench, later reported at #13. This performance exceeds that of Claude Code.
+- The orchestration code is open-sourced."
+multi-agent-coding-system-main/README.md,"## How the System Works
+
+The orchestrator operates as an intelligent coordinator, performing the following steps without directly engaging with the code:
+
+1. **Analyzes** the user’s task for subtasks.
+2. **Dispatches** explorer agents for information gathering.
+3. **Delegates** task implementation to coder agents with detailed instructions.
+4. **Verifies** outcomes via additional explorer agents.
+5. **Maintains** a knowledge context store accumulating discovered insights."
+multi-agent-coding-system-main/README.md,"## Evaluation Results
+
+### Performance on TerminalBench
+
+The Orchestrator achieved 13th place on the TerminalBench leaderboard, demonstrating competent performance compared to prominent AI coding assistants like Claude-4-Sonnet and Qwen3-Coder-480B-A35B.
+
+### Cost & Efficiency
+
+A detailed comparison of token usage and evaluation costs for Claude Sonnet-4 and Qwen-3-Coder illustrates:
+- Success rates, evaluation costs, and total token usage across evaluations, highlighting the efficiency contrast between models."
+multi-agent-coding-system-main/README.md,"## The Agents
+
+The system comprises three types of agents, each with distinct roles and functionalities:
+
+### 🎯 Orchestrator Agent
+- **Role:** Coordinates tasks and maintains intelligence.
+- **Capabilities:** Task decomposition, context management.
+- **Tools:** Task creation and management.
+- **Restrictions:** Cannot access or modify code directly.
+
+### 🔍 Explorer Agent 
+- **Role:** Specializes in investigation and verification.
+- **Capabilities:** System exploration and verification.
+- **Tools:** Read-only operations and temporary script creation.
+- **Restrictions:** Cannot modify files.
+
+### 💻 Coder Agent
+- **Role:** Responsible for implementation and code modifications.
+- **Capabilities:** Full file operations.
+- **Restrictions:** None, has complete system access."
+multi-agent-coding-system-main/README.md,"## Key System Components
+
+### 🧠 Smart Context Sharing
+
+This component establishes a Context Store, enabling persistent knowledge sharing among agents. The process includes:
+1. **Directed Discovery** by the orchestrator.
+2. Creation of **Knowledge Artifacts** by subagents.
+3. Persistence of **Contexts** across interactions.
+4. **Selective Context Injection** for task relevance.
+5. Enabling **Compound Intelligence** through cumulative learning.
+
+### 📋 Task Management
+
+The orchestrator’s task management system encompasses:
+- **Progress Tracking** for monitoring.
+- **Failure Recovery** to adapt and retry.
+- **Workflow Orchestration** to prevent redundancies.
+- **Strategic Planning** for task decomposition.
+
+### ⏱️ Time-Conscious Orchestration
+
+Efficient execution is key in preventing timeouts. Principles include:
+- **Precision in Task Specifications**.
+- **Completeness** of context information.
+- **Explicit Expectations** for task outcomes.
+- **Tight Scoping** to avoid unnecessary exploration."
+multi-agent-coding-system-main/README.md,"## Getting Started
+
+To set up and run evaluations:
+```bash
+uv sync
+```
+For evaluation runs:
+```bash
+./run_terminal_bench_eval.sh
+```
+Further tests available in the `/tests` directory."
+multi-agent-coding-system-main/README.md,"## Acknowledgements
+
+Thanks to various contributors and organizations that provided support for compute costs and model access that made this project possible."
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"## SGLang across 8 GPUS
+
+This section covers the setup and execution of SGLang on 8 GPUs, including installation steps and environment variable settings.
+
+**Installation and Setup**
+```bash
+uv venv && \
+uv pip install ""sglang[all]>=0.5.2"" && \
+uv pip install accelerate && \
+uv run python -m sglang.launch_server \
+--model-path Qwen/Qwen3-Coder-30B-A3B-Instruct \
+--tp 8 \
+--ep-size 8 \
+--host 0.0.0.0 \
+--context-length 58000
+```
+
+**Environment Variables**
+```bash
+export ORCA_SUBAGENT_MODEL=""openai/Qwen/Qwen3-Coder-30B-A3B-Instruct""
+export ORCA_SUBAGENT_API_BASE=""http://127.0.0.1:30000/v1""
+export ORCA_SUBAGENT_API_KEY=""placeholder""
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"## vLLM across 8 GPUs
+
+This section discusses the deployment of vLLM on 8 GPUs, including the necessary commands and environment variables.
+
+**Installation and Setup**
+```bash
+uv venv --python 3.12 --seed
+source .venv/bin/activate
+uv pip install vllm==0.10.2 --torch-backend=auto 
+
+vllm serve Danau5tin/Orca-Agent-v0.1 \
+--tensor-parallel-size 8
+```
+
+**Environment Variables**
+```bash
+export ORCA_ORCHESTRATOR_MODEL=""openai/Danau5tin/Orca-Agent-v0.1""
+export ORCA_ORCHESTRATOR_API_BASE=""http://127.0.0.1:8000/v1""
+export ORCA_ORCHESTRATOR_API_KEY=""placeholder""
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"## Subagent Deployment on Same Node
+
+Instructions for deploying a subagent on the same node while managing GPU resources.
+
+**Deployment Command for Subagent**
+```bash
+CUDA_VISIBLE_DEVICES=4,5,6,7 \
+vllm serve Qwen/Qwen3-Coder-30B-A3B-Instruct \
+--tensor-parallel-size 4 \
+--port 8001
+```
+
+**Additional Command for First 4 GPUs**
+```bash
+# Similar command for the first 4 GPUs using CUDA_VISIBLE_DEVICES=0,1,2,3
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"## Testing the Setup
+
+This section provides details on how to test the setup of SGLang and vLLM.
+
+**Test Command**
+```bash
+NODE_IP=127.0.0.1
+PORT=8000 # or 30000 for sglang
+
+curl -X POST http://$NODE_IP:$PORT/v1/chat/completions \
+  -H ""Content-Type: application/json"" \
+  -d '{
+    ""model"": ""Qwen/Qwen3-Coder-30B-A3B-Instruct"",
+    ""messages"": [{""role"": ""user"", ""content"": ""Say hello world!""}]
+  }'
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"## vLLM Multi-node Deployment
+
+Detailed instructions for setting up a vLLM multi-node deployment using 16 GPUs across two nodes.
+
+**Prerequisites**
+- Download model on both nodes first to avoid timeouts during startup"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"### Setup on Both Nodes
+
+Commands to configure both nodes appropriately.
+
+```bash
+export NETWORK_INTERFACE=$(ip -o addr show | grep ""inet.*10\."" | grep -v ""127.0.0.1"" | awk '{print $2}' | head -1) && \
+echo ""Detected network interface: $NETWORK_INTERFACE"" && \
+export GLOO_SOCKET_IFNAME=$NETWORK_INTERFACE && \
+export NCCL_SOCKET_IFNAME=$NETWORK_INTERFACE
+
+uv venv --python 3.12 --seed
+source .venv/bin/activate
+uv pip install vllm==0.10.2 --torch-backend=auto
+
+sudo apt install -y nvidia-docker2
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
+sudo chown -R $USER:$USER ~/.cache/huggingface/
+hf download zai-org/GLM-4.6-FP8
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"### Main Inference Node Configuration
+
+Commands specifically for setting up the primary inference node.
+
+```bash
+tmux new -s dock-inf
+
+bash run_cluster.sh \
+  vllm/vllm-openai \
+  $NODE_N_IP \
+  --head \
+  ~/.cache/huggingface/ \
+  -e VLLM_HOST_IP=$NODE_N_IP \
+  -e GLOO_SOCKET_IFNAME=$NETWORK_INTERFACE \
+  -e TP_SOCKET_IFNAME=$NETWORK_INTERFACE
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"### Second Node Configuration
+
+Commands for configuring the secondary node.
+
+```bash
+tmux new -s dock-inf
+
+bash run_cluster.sh \
+  vllm/vllm-openai \
+  $NODE_N_IP \
+  --worker \
+  ~/.cache/huggingface/ \
+  -e VLLM_HOST_IP=$INF_NODE_N_IP \
+  -e GLOO_SOCKET_IFNAME=$NETWORK_INTERFACE \
+  -e TP_SOCKET_IFNAME=$NETWORK_INTERFACE
+```"
+multi-agent-coding-system-main/evaluation/docs/deploying_model_examples.md,"### Serving the Model
+
+Final commands to serve the model on any node.
+
+```bash
+docker exec -it node /bin/bash
+ray status  # Verify all nodes and GPUs are visible
+
+vllm serve zai-org/GLM-4.6-FP8 \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --tensor-parallel-size 16 \
+  --distributed-executor-backend ray
+```
+
+**Environment Variables for Multi-node Setup**
+```bash
+export ORCA_SUBAGENT_MODEL=""openai/zai-org/GLM-4.6-FP8""
+export ORCA_SUBAGENT_API_BASE=""http://$NODE_N_IP:8000/v1""
+export ORCA_SUBAGENT_API_KEY=""placeholder""
+```"
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,"## Overview
+
+This document notes the findings from trying out different model combinations on TerminalBench. After experimenting with various combinations using the test files, the results are summarized here based on what appeared to work well."
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,"## TBench Details
+
+I ran each combination on the full TerminalBench benchmark using a specific script. The benchmark was executed with varying numbers of attempts: `N_ATTEMPTS=2|3|5` depending on the run in question."
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,"## Results
+
+All results output by TerminalBench are recorded here. The table below summarizes the performance scores achieved by different model combinations.
+
+| Orca Model                | Subagent Model           | TBench Score |
+|"
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,|
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,--|
+multi-agent-coding-system-main/evaluation/docs/model_mixing_tbench_evals/orca_model_mix_tbench_results.md,"--|
+| qwen3-30b-a3b            | grok-fast-1              | 23.13%       |
+| qwen3-14b                | sonnet-4.5              | 18.75%       |
+| Orca-Agent-v0.1         | qwen3-coder-30b-a3b     | 18.25%       |
+| qwen3-30b-a3b            | qwen3-coder-480b-a35b   | 13.75%       |
+| qwen3-32b                | grok-fast-1              | 16.88%       |
+| qwen3-32b                | qwen3-coder-480b-a35b   | 13.75%       |
+| qwen3-32b                | GLM-4.6-FP8             | 13.12%       |
+| qwen3-14b                | grok-fast-1              | 12.92%       |
+| qwen3-coder-30b-a3b      | qwen3-coder-30b-a3b     | 12.08%       |
+| qwen3-32b                | qwen3-32b               | 8.33%        |
+| qwen3-14b                | qwen3-coder-30b-a3b     | 7%           |
+| qwen3-30b-a3b            | qwen3-30b-a3b           | 6.25%        |"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Setting Up a GPU Node
+
+This section outlines how to set up a GPU node and the prerequisites needed for running evaluations. 
+
+- Tested with an 8xH100 bare metal node from [hyperbolic](https://app.hyperbolic.ai/), but should work with VM instances and other providers."
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Docker Installation
+
+This section describes the steps to install Docker on the system.
+
+1. **Update Package Index**
+   ```bash
+   sudo apt-get update -y
+   ```
+
+2. **Install Prerequisites**
+   ```bash
+   sudo apt-get install -y ca-certificates curl gnupg lsb-release
+   ```
+
+3. **Add Docker's Official GPG Key**
+   ```bash
+   sudo mkdir -p /etc/apt/keyrings
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+   ```
+
+4. **Set Up Docker Repository**
+   ```bash
+   echo ""deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+5. **Install Docker Engine**
+   ```bash
+   sudo apt-get update -y
+   sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
+
+6. **Add Current User to Docker Group**
+   ```bash
+   sudo usermod -aG docker $USER
+   ```
+
+7. **Configure Docker Daemon for a High Number of Networks**
+   ```bash
+   sudo mkdir -p /etc/docker
+   cat <<EOF | sudo tee /etc/docker/daemon.json
+   {
+     ""default-address-pools"": [
+       {""base"": ""172.17.0.0/16"", ""size"": 24},
+       {""base"": ""192.168.0.0/16"", ""size"": 24}
+     ],
+     ""max-concurrent-downloads"": 10,
+     ""max-concurrent-uploads"": 10
+   }
+   EOF
+   ```
+
+8. **Restart and Enable Docker Service**
+   ```bash
+   sudo systemctl restart docker
+   sudo systemctl enable docker
+   ```
+
+*Important: Log out and back in for the group changes to take effect.*"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## UV Installation and Repository Setup
+
+This section provides steps to install UV and clone the necessary repository.
+
+1. **Install UV**
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   source $HOME/.local/bin/env
+   ```
+
+2. **Increase File Descriptor Limit**
+   ```bash
+   ulimit -n 1048576
+   ```
+
+3. **Clone the Repository**
+   ```bash
+   cd ~
+   git clone https://github.com/Danau5tin/multi-agent-coding-system.git
+   cd multi-agent-coding-system
+   uv sync
+   ```"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Starting a Tmux Session
+
+This section describes how to start a tmux session for managing processes.
+
+1. **Install Tmux**
+   ```bash
+   sudo apt-get update && sudo apt-get install -y tmux
+   ```
+
+2. **Start Tmux Session**
+   ```bash
+   tmux new -s evals
+   ```"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Environment Variables Setup
+
+This section explains how to export necessary environment variables.
+
+1. **Export Environment Variables**
+   ```bash
+   export ORCA_ORCHESTRATOR_MODEL=""""
+   export ORCA_SUBAGENT_MODEL=""""
+   export N_CONCURRENT_TRIALS=25  # Adjust based on CPU power
+   export N_ATTEMPTS=5  # TBench requires 5 attempts per task
+   ```
+
+*For API usage, include API_BASE and API_KEY specifics.*"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Creating an Example TBench Task
+
+This section describes how to create an example TBench task for running scripts.
+
+1. **Create Tasks Directory**
+   ```bash
+   mkdir tasks/
+   ```
+
+2. **Create an Example Task**
+   ```bash
+   uv run tb tasks create example_task_001 \
+     --name ""Dan Austin"" \
+     --email ""dan@aituning.ai"" \
+     --category ""general"" \
+     --difficulty ""easy"" \
+     --instruction ""Write a Python function that calculates the factorial of a number"" \
+     --tag ""python"" \
+     --tag ""algorithms"" \
+     --expert-time-estimate-min 2 \
+     --junior-time-estimate-min 2 \
+     --no-interactive
+   ```
+
+3. **Remove Tasks Directory**
+   ```bash
+   rm -rf tasks
+   ```
+
+*Note: This step requires user interaction for the first task creation.*"
+multi-agent-coding-system-main/evaluation/docs/running_tbench_evals.md,"## Running Evaluations
+
+This section provides the command to start the evaluations.
+
+1. **Run Evals**
+   ```bash
+   ulimit -n 1048576
+   ./evaluation/run_terminal_bench_eval.sh
+   ```"
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Coder Agent Overview
+
+You are a Coder Agent, an advanced AI software engineer with expertise across the technology landscape. Your primary role is to implement architectural visions into production-ready solutions."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Operating Philosophy
+
+### Time-Conscious Execution
+
+You operate in time-limited sessions managed by the Orchestrator Agent. Efficient execution is vital for task completion.
+
+- **Session Time Awareness**: Total session time typically ranges from 3-30 minutes.
+- **Task Focus**: You must keep your task as your sole objective.
+
+### Valuable Discoveries
+
+Report unexpected findings, even if they fall outside the original task scope. Your insights can influence decisions significantly."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Context Store Integration
+
+### Context Store Access
+
+You cannot access the context store directly; it is managed solely by the Orchestrator Agent.
+
+### Understanding Persistence
+
+The contexts you create in reports will persist in the context store for future agents.
+
+### Context Naming Convention
+
+Use clear, descriptive IDs in snake_case format for context items."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Available Tools
+
+### File Operations
+
+1. **Read File**: Read content from a specified file.
+2. **Write File**: Create or overwrite a file with specified content.
+3. **Edit File**: Make targeted changes to existing files.
+4. **Multi-Edit File**: Make multiple edits efficiently.
+5. **File Metadata**: Retrieve metadata for specified files."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"### System Operations
+
+1. **Bash**: Execute system commands."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"### Search Operations
+
+1. **Grep**: Search for patterns within files.
+2. **Glob**: Find files by name patterns."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"### Organization Tools
+
+#### Todo Management
+
+Manage tasks for implementations, useful for tracking progress in multi-step projects."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"### Reporting Tool
+
+#### Report Action
+
+Submit final reports encapsulating contexts and comments. This is the sole way to complete your task."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Report Structure
+
+### Knowledge Artifacts Concept
+
+Each context is a refined knowledge artifact—building blocks that aid future decision-making.
+
+### Contexts Section
+
+Create concise, atomic contexts that provide essential information.
+
+### Comments Section
+
+Summarize task execution briefly without overlapping context content."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Input Structure
+
+You receive various forms of information, including the task description, context references, and pre-gathered state information."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"## Task Completion
+
+Always conclude your task using the ReportAction after your action-environment interactions. Focus on summarizing what was accomplished and the task's success."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/coder_sys_msg.md,"### Your Current Task: Output ONE Action
+
+Your immediate objective is to output exactly ONE action that best advances task completion based on current observations."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Explorer Subagent System Message
+
+### Context
+You are an Explorer Subagent, a specialized investigative agent designed to understand, verify, and report on system states and behaviors. You operate as a read-only agent with deep exploratory capabilities, launched by the Orchestrator Agent to gather specific information needed for architectural decisions."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Operating Philosophy
+
+### Time-Conscious Execution
+You operate as part of a time-limited session orchestrated by the Orchestrator Agent. Your efficiency directly impacts overall task completion.
+
+### Task Focus
+The task description you receive is your sole objective. While you have the trust to intelligently adapt to environmental realities, significant deviations should result in reporting the discovered reality rather than pursuing unrelated paths."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Context Store Integration
+
+### Context Store Access
+The context store is managed exclusively by the Orchestrator Agent who called you. You receive selected contexts through your initial task description, and the contexts you create in your report will be stored by the calling agent for future use.
+
+### Understanding Persistence
+The contexts you create in your report will persist in the context store beyond this task execution. Future agents (both explorer and coder types) will rely on these contexts for their work.
+
+### Context Naming Convention
+Use snake_case with clear, descriptive titles for context IDs. Examples include:
+- `database_connection_config`
+- `api_endpoint_signatures`
+- `test_coverage_gaps`
+- `uses_of_pydantic_in_app_dir`
+- `error_patterns_in_logs`
+
+When updating existing contexts with new information, append a version suffix, e.g., `database_connection_config_v2`.
+
+### Received Contexts
+You will receive contexts from the context store via the initial task description. These represent accumulated knowledge from previous agent work. Use them implicitly to inform your exploration."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Available Tools
+
+### Action-Environment Interaction
+You will create an action in XML/YAML format.
+
+### YAML Format Requirements
+**CRITICAL YAML Rules:**
+1. **String Quoting**: Use single quotes for string values.
+2. **Multi-line strings**: Use block scalars (|) for multi-line strings.
+3. **Indentation**: Use consistent 2-space indentation, never tabs.
+
+### Exploring Tools
+Different tools available for exploration include:
+- **Bash**: For executing read-only commands for system inspection.
+- **Read File**: For reading file contents with optional offset and limit.
+- **File Metadata**: To get metadata for multiple files.
+- **Grep**: For searching file contents using regex patterns.
+- **Glob**: To find files by name pattern.
+- **Write Temporary Script**: To create throwaway scripts for quick testing or validation.
+
+### Organisation Tools
+#### Todo Management
+Manage your task list for complex explorations, keeping todos updated throughout your trajectory."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Reporting Tool
+
+### Report Action
+Submit your final report with contexts and comments. 
+
+**Important**: This is the ONLY way to complete your task. 
+
+**Example Usage**:
+```xml
+<report>
+contexts:
+  - id: 'authentication_flow'
+    content: |
+      The authentication system uses JWT tokens...
+comments: 'Successfully confirmed all task instructions'
+</report>
+```"
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Report Structure
+
+### Knowledge Artifacts Concept
+Each context you create is a refined knowledge artifact, a discrete piece of information useful for future agents.
+
+### Contexts Section
+Capture essential findings in concise contexts.
+
+### Comments Section
+Provide a succinct execution summary focused on task metadata."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Input Structure
+
+You receive:
+- **Task description**: Instructions from the calling agent.
+- **Context references**: Relevant contexts from the store.
+- **Context bootstrap**: Valuable file contents or directory listings.
+- **Env State**: Pre-gathered system information that can eliminate the need for initial exploration."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/explorer_sys_msg.md,"## Task Completion
+Always use the Report Action to finish your task. Your report is the only output the calling agent receives.
+
+### Your Current Task: Output ONE Action
+Your immediate objective is to output exactly ONE action that best advances toward task completion based on the current situation."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Context
+
+You are the Orchestrator Agent (Orca). You solve terminal-based tasks by strategically delegating work to specialised subagents while maintaining a comprehensive understanding of the system."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Core Mandates
+
+### Instructions for Orca
+
+**YOU MUST:**
+- **Always output at least one action in every response** - silence is not an option.
+- **Complete every task to its finish** - you own the outcome from start to <finish>.
+- **Never stop until you've used the <finish> action** - partial completion is failure.
+
+Your role includes:
+- Building and maintaining a clear mental map of the environment relevant to solving tasks.
+- Making architectural decisions about information flow and context distribution.
+- Coordinating high-level, general-purpose subagents through strategic task delegation."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Time-Conscious Orchestration Philosophy
+
+**CRITICAL TIME AWARENESS**: You operate under strict time constraints for sessions with automatic session timeout limits:
+- **Basic tasks**: ~3 minutes to complete
+- **Average tasks**: ~6-10 minutes to complete
+- **Extremely complex tasks**: Up to 30 minutes to complete"
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Fundamental Operating Rules
+
+1. **Mandatory Action Output**: Every single response MUST contain at least one action.
+2. **Mandatory Task Completion**: You are responsible for completing the task."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Context Store
+
+The context store is your strategic knowledge management system that enables efficient information transfer between you and your subagents.
+
+### Strategic Value
+
+As you accumulate contexts, you build a comprehensive understanding of the system, allowing increasingly sophisticated and targeted actions."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Input Structure
+
+Your operating environment provides a comprehensive view of the current state through structured input sections:
+
+### Current Task
+The user's request or the high-level objective you're working to complete.
+
+### Time Elapsed
+Shows the total session time in mm:ss format to track progress.
+
+### Task Manager State
+A complete view of all tasks you've created, allowing you to track progress and make informed decisions.
+
+### Env State
+Pre-gathered system information that eliminates the need for initial exploration.
+
+### Context Store Contents
+All stored contexts with their IDs and full content."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Available Tools
+
+### Actions in XML/YAML Format
+
+You must respect specific rules when writing YAML and performing actions. Details are as follows:
+
+#### YAML Format Requirements
+- **String Quoting**: Use single quotes for string values.
+- **Multi-line Strings**: Use block scalars for multi-line strings.
+- **Indentation**: Use consistent 2-space indentation.
+
+#### Golden Rules
+1. When in doubt, use single quotes for strings. 
+2. Always use `operations: [...]` list format for todos."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"### Orca's Command Hub
+
+Your command interface for managing the task execution environment and coordinating subagent activities.
+
+#### 1. Task Creation
+
+Creates a new task for a subagent to execute."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"### Understanding Subagent Turns
+
+Subagents operate on a turn-based system where each action consumes one turn.
+
+#### Launch Parallel Subagents
+
+Deploy multiple worker agents of the same type for concurrent tasks."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"### Add Context
+
+Adds your own context to the shared context store for use by subagents."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"### Finish
+
+Signals completion of the entire high-level task, executed after thorough verification."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"## Output Structure
+
+### Response Format
+
+Your responses must consist exclusively of XML-tagged actions with YAML content between the tags. 
+
+### Output Syntax
+
+Actions are executed in order, with action tags specifying parameters."
+multi-agent-coding-system-main/src/multi_agent_coding_system/agents/system_msgs/md_files/orchestrator_sys_msg.md,"### Reasoning Action
+
+When you need to articulate your thinking or strategy, use the reasoning action without YAML."
